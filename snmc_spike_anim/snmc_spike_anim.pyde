@@ -8,14 +8,32 @@
 
 from spike import Spike
 
-spikes = []
+spike_queue = []
+
+num_particles = 3
+y_spacing = 5
+
+
+# will have a frame count. if a spike with that init time is present in a particle, 
+# add it to the spike_queue. 
+
+
+
 
 def setup():
     size(1000, 1000)
     background(255)
     noStroke()
-    frameRate(20)
-    spikes.append(Spike(width / 2, height / 2))
+    frameRate(60)
+    particles = [Particle(i) for i in range(num_particles)]
+    map(lambda x: x.populate_spikes, particles)
+
+    
+    
+    
+    
+    
+  #  spikes.append(Spike(width / 2, height / 2))
     
 def draw():
     background(255)
@@ -26,7 +44,6 @@ def draw():
         sp.display()
         print(spikes)
         if sp.spike_finished():
-       #     print("Got here")
             spikes.remove(sp)
     
 
