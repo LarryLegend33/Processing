@@ -1,6 +1,12 @@
 import math 
 
 
+def electrode(x, y):
+    
+    
+        
+
+
 class Spike():
     
     def __init__(self, start_x, start_y, spike_init_time, spike_height):
@@ -10,9 +16,9 @@ class Spike():
         self.speed = 1
         self.init_time = spike_init_time
         self.spike_height = spike_height
-        self.spike_stroke = 0
-        self.spike_strokeweight = 1
-        self.end_time = 200
+        self.spike_stroke = 255
+        self.spike_strokeweight = .25
+        self.end_time = 100
         
     def move_in_time(self, fc):
         if self.init_time <= fc <= self.init_time + self.end_time: 
@@ -26,9 +32,6 @@ class Spike():
             stroke(self.spike_stroke)
             strokeWeight(self.spike_strokeweight)
             line(self.x, self.y, self.x, self.y + self.spike_height)
-            fill(0, 0)
-       
-       #rect(self.x, self.y, 20, self.spike_height)  
 
 # in Particle, you make a spike object for each element. 
 # In the ElectrodeLocation class, parse according to P and Q? 
@@ -46,7 +49,6 @@ class Particle:
         # can make this amenable to larger assembly sizes and more latents. 
         # hand code for now. 
         self.assembly_indices = ["q0", "q1", "p0", "p1"]   
-        
         self.assemblies = {i : [] for i in self.assembly_indices}
         self.mux = {"q": [], 
                     "p": []}
@@ -137,9 +139,9 @@ class Particle:
         
     def populate_wta_and_scoring(self):
     
-        spike_height = 4
-        spacing = 1
-        cortex_x = 300
+        spike_height = 5
+        spacing = 2
+        cortex_x = 600
         cortex_y = 300
         # elements have to be arranged in y-order   
         wtas = [self.wta[0], self.wta[1]]
@@ -147,20 +149,14 @@ class Particle:
                        self.neurons_per_assembly) for pq_ind in range(self.num_states)]
         scoring = [self.mux["p"], self.mux["q"], self.tik["p"], self.tik["q"], self.accum["q"]]
         elements = wtas + assemblies + scoring 
-        sp_train_ylocs = range(cortex_y, cortex_y + ((spike_height + spacing) * len(elements)))
+        sp_train_ylocs = range(cortex_y, cortex_y + ((spike_height + spacing) * len(elements)), spike_height+spacing)
         for i, elem in enumerate(elements):
             self.assign_spikes(elem, cortex_x, sp_train_ylocs[i], spike_height)        
                     
     def assign_spikes(self, spikelist, x, y, spike_height):
         for t in range(self.length_of_simulation):
             if spikelist[t] != 0:
-              #  print(spikelist[t])
-                self.all_spikes.append(Spike(x, y, t, spike_height))
-        
-        
-#        self.all_spikes += [Spike(x, y, t, spike_height) for t in range(len(self.length_of_simulation)) if spikelist[t] != 0]
-          
-                
+                self.all_spikes.append(Spike(x, y, t, spike_height))            
         
 def bernoulli(p):
     d = random(0, 1)

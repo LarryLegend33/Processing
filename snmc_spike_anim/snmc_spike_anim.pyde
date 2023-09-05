@@ -6,39 +6,48 @@
 # A nice sampler can be made here out of simply random() 
 # by 
 
-from spike import Spike, Particle 
+from spike import Spike, Particle, electrode 
 
 spike_queue = []
 num_particles = 1
+v1_electrode = (490, 300, 100, 100)
+cp_electrode = (300, 200, 100, 100)
+gpi_electrode = (200, 200, 100, 100)
+lp_electrode = (200, 200, 100, 100)
+brain_location = (200, 300, 400, 400)
+
 # will have a frame count. if a spike with that init time is present in a particle, 
 # add it to the spike_queue. 
 
 def setup():
- #   global spike_queue
-    size(1000, 1000)
-    background(255)
+    global brain, electrode_l, electrode_r 
+    size(1200, 800)
+    background(0)
     noStroke()
     frameRate(60)
-   # print(spike_queue)
+    brain = loadImage("MouseBrain.png")
+    electrode_r = loadImage("Electrode.png")
+    electrode_l = loadImage("Electrode_Reflected.png")
+    image(brain, *brain_location)
+    image(electrode_l, *v1_electrode)
     particles = [Particle(i) for i in range(num_particles)]
     for p in particles:
         p.populate_assemblies()
         p.run_snmc()
         p.populate_wta_and_scoring()
-        spike_queue.append(p.all_spikes[0])
-       
-
-  #  spikes.append(Spike(width / 2, height / 2))
-    
+        spike_queue.extend(p.all_spikes)
+            
 def draw():
-    print("drawing")
-    background(255)
-   # print("yo")
+    background(0)
+    noSmooth()
+    image(brain, *brain_location)
+    image(electrode_l, *v1_electrode)
     for sp in spike_queue:
         print(sp.x)
         sp.move_in_time(frameCount)
         sp.display(frameCount)
         if sp.spike_finished(frameCount):
+            print("removing spike")
             spike_queue.remove(sp)
     
 
